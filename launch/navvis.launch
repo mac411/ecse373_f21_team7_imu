@@ -1,0 +1,44 @@
+<launch>
+
+	<!-- Create an argument to determine whether to use a XACRO or URDF file. -->
+	<arg name="use_xacro" default="false" />
+	<arg name="use_robot_state_publisher" default="true"/>
+	<arg name="rviz_config" default="$(find navvis_description)/config/config.rviz" />
+
+	<!-- The filename can be passed into the launch file to override the default. -->     
+	<arg if="$(arg use_xacro)" name="filename" default="navvis_definition.xacro" />
+	<arg unless="$(arg use_xacro)" name="filename" default="navvis_definition.urdf" />
+
+	<!-- The full path of the URDF/XACRO file can be passed into the launch file instead. -->
+	<arg name="file" default="$(find navvis_description)/urdf/$(arg filename)" />
+
+	<!-- Use the file argument as the name of the file used to set the /robot_description parameter on the parameter server -->
+	<param if="$(arg use_xacro)" name="robot_description" command="$(find xacro)/xacro.py --inorder $(arg file)" />
+	<param unless="$(arg use_xacro)" name="robot_description" textfile="$(arg file)" />
+
+	<!-- Run the robot_state_publisher. -->
+	<node if="$(arg use_robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_wheel_left" args="-0.1 0.4 0.0 0.0 0.0 -1.57 base wheel_left" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_wheel_right" args="-0.1 -0.4 0.0 0.0 0.0 -1.57 base wheel_right" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_wheel_center" args="0.1 0.0 -0.05 0.0 0.0 1.57 base wheel_center" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_laser_bottom" args="0.3157894464801903 -0.002068548615034871 0.5099999434059285 0.0024658 -1.3045001 3.1354753 base laser_vert_bottom" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_laser_right" args="0.2978 -0.1450 1.8451 -1.9377 0.6313 -1.1760 base laser_vert_top_right" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_laser_left" args="0.2997 0.1531 1.8443 1.9560 0.6198 1.1780 base laser_vert_top_left" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_laser_horiz" args="0.2325416305773505 0.0001380069427607134 1.950122926231907 -0.0015308 0.114646 -0.0012068 base laser_horiz" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_base_link" args="0.07 0.0 1.792 0.0 3.1405788 0.0 base_link base" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_imu" args="0.0 0.0 0.0 3.1382064 0.0034281 3.1405788 base_link imu" />
+	<node unless="$(arg use_robot_state_publisher)" pkg="tf2_ros" type="static_transform_publisher" name="static_horiz_base" args="0.0 0.0 0.0 0.03585 0.0 0.0 base_link laser_horiz_base_link" />
+	
+	<!-- Run RVIZ and use a specific configuration file. If RVIZ is closed, close everything. -->
+	<node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config)" required="true" />
+	
+	<!-- Create an argument to determine whether to use joint_state_publisher or joint_state_publisher_gui. -->
+	<arg name="use_jsp_gui" default="true" />
+	
+	<!-- Run joint_state_publisher with or without gui. -->
+	<arg if="$(arg use_jsp_gui)" name="jsp" default="joint_state_publisher_gui" />
+	<arg unless="$(arg use_jsp_gui)" name="jsp" default="joint_state_publisher" />
+	
+	<node pkg="$(arg jsp)" type="$(arg jsp)" name="$(arg jsp)" />
+
+</launch> 

@@ -1,0 +1,16 @@
+<launch>
+    <arg name="map_file" default="$(find maps_glennan)/maps/glennan5_map.yaml" />
+    <arg name="bag_file" default="$(find imu)/bag/glennan_5_complete.bag" />
+    <arg name="use_sim_time" default="true" />
+    <arg name="use_robot_state_publisher" default="true" />
+    <include file="$(find imu)/launch/navvis.launch">
+        <arg name="use_xacro" value="true" />
+        <arg name="file" value="$(find imu)/urdf/imu.xacro" />
+        <arg name="use_robot_state_publisher" value="$(arg use_robot_state_publisher)" />
+        <arg name="rviz_config" value="$(find imu)/config/laser_map_config.rviz" />
+    </include>
+    <param if="$(arg use_sim_time)" name="use_sim_time" value="true" />
+	<param unless="$(arg use_sim_time)" name="use_sim_time" value="false" />
+    <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+    <node pkg="rosbag" type="play" name="bag_player" args="--clock $(arg bag_file) /tf_trajectory:=/tf" />
+</launch>
