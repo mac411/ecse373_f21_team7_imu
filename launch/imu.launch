@@ -1,9 +1,0 @@
-<launch>
-    <arg name="use_xacro" default="true" />
-    <arg name="use_sim_time" default="true" />
-    <include file="$(find navvis_description)/launch/navvis.launch">
-        <arg name="use_xacro" value="$(arg use_xacro)"/>
-        <arg name="use_sim_time" value="$(arg use_sim_time)" />
-    </include>
-    <param name="robot_description" command="$(find xacro)/xacro.py --inorder $(find imu)/urdf/imu.xacro" />
-</launch>
