@@ -1,6 +1,8 @@
 <launch>
-    <arg name="map_file" default="$(find maps_glennan)/maps/glennan5_map.yaml" />
-    <arg name="bag_file" default="$(find imu)/bag/glennan_5_complete.bag" />
+    <!-- Tested with default="$(find maps_glennan)/maps/glennan5_map.yaml" -->
+    <arg name="map_file" />
+    <!-- Tested with default="$(find imu)/bag/glennan_5_complete.bag" -->
+    <arg name="bag_file" />
     <arg name="use_sim_time" default="true" />
     <arg name="use_robot_state_publisher" default="true" />
     <include file="$(find imu)/launch/navvis.launch">

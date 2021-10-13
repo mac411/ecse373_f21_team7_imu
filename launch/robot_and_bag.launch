@@ -1,5 +1,6 @@
 <launch>
-    <arg name="bag_file" default="$(find imu)/bag/glennan_5_complete.bag" />
+    <!-- Tested with default="$(find imu)/bag/glennan_5_complete.bag" -->
+    <arg name="bag_file" />
     <arg name="use_sim_time" default="true" />
     <arg name="use_robot_state_publisher" default="true" />
     <include file="$(find imu)/launch/navvis.launch">
